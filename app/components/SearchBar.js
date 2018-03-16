@@ -16,7 +16,7 @@ class SearchBar extends React.Component {
       this.props.updateLocation(this.props.location.pathname.split('/')[2]);
     } else {
       let search = '';
-      axios.get('http://freegeoip.net/json/')
+      axios.get('https://freegeoip.net/json/')
         .then(response => {
           if (response.status == 200) {
             if (response.data.country_name == "United States") {
