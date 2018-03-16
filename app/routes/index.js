@@ -1,7 +1,7 @@
 'use strict';
 
 var path = process.cwd();
-var PollHandler = require(path + '/app/controllers/pollHandler.server.js');
+var SearchHandler = require(path + '/app/controllers/searchHandler.server.js');
 
 module.exports = function (app, passport) {
 
@@ -13,21 +13,29 @@ module.exports = function (app, passport) {
 		}
 	}
 
-  var pollHandler = new PollHandler();
+  var searchHandler = new SearchHandler();
+  var redirectURL = '/';
+  var redirectObj = {
+    successRedirect: redirectURL,
+    failureRedirect: redirectURL
+  };
 
   app.route('/auth/github')
+   .all(function(req, res, next) {
+     redirectURL = req.get('Referrer');
+     redirectObj.successRedirect = redirectURL;
+     redirectObj.failureRedirect = redirectURL;
+     return next();
+   })
    .get(passport.authenticate('github'));
 
   app.route('/auth/github/callback')
-    .get(passport.authenticate('github', {
-      successRedirect: '/profile',
-      failureRedirect: '/'
-    }));
+    .get(passport.authenticate('github', redirectObj));
 
   app.route('/logout')
   	.get(function (req, res) {
   		req.logout();
-  		res.redirect('/');
+  		res.json({});
 	});
 
   app.route('/api/user')
@@ -40,14 +48,11 @@ module.exports = function (app, passport) {
   		res.json(req.user.github);
 	});
 
-  app.route('/api/polls')
-		.get(pollHandler.queryParser)
-    .post(isLoggedIn, pollHandler.createPoll);
+  app.route('/api/search/:location')
+		.get(searchHandler.getBars);
 
-  app.route('/api/polls/:id')
-    .get(pollHandler.getPollById)
-    .put(pollHandler.updatePoll)
-    .delete(pollHandler.deletePoll);
+  app.route('/api/bars')
+		.post(isLoggedIn, searchHandler.editAttendees);
 
 	app.route('*')
 		.get(function (req, res) {

@@ -3,25 +3,35 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 
+import SearchBar from './SearchBar';
+
 class Header extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  handleAuth() {
+    this.props.storeSessionState();
+  }
 
   render() {
     const user = this.props.user;
     return (
       <HeaderContainer>
-        <Title to='/polls'>Poll'd</Title>
+        <Title to='/'>
+          <img src='../../public/img/beer-logo.png' />
+          BeerMe
+        </Title>
         { !this.props.isLoggedIn &&
-        <ButtonALink
-          href={`/auth/github`}
-          onClick={this.getUser}>
-            Sign in with Github
-        </ButtonALink>
+          <SignInButton
+            onClick={() => this.handleAuth()}>
+              Sign in with Github
+          </SignInButton>
         }
         { this.props.isLoggedIn &&
-          <MenuItems>
-            <ButtonLink to={'/polls/new'}>Create a Poll</ButtonLink>
-            <UserLink to={`/profile`}>{user.username}</UserLink>
-          </MenuItems>
+          <SignOut onClick={() => this.props.signOut()}>
+            Sign out
+          </SignOut>
         }
       </HeaderContainer>
     );
@@ -32,8 +42,8 @@ export default Header;
 
 const HeaderContainer = styled.div`
   width: 100%;
-  height: 60px;
-  background: #333;
+  height: 90px;
+  background: #396FB8;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -46,22 +56,60 @@ const HeaderContainer = styled.div`
 const Title = styled(Link)`
   color: white;
   font-weight: 400;
-  font-size: 1.5rem;
+  font-size: 2.25rem;
   margin: 0;
   line-height: 2.5rem;
   text-decoration: none;
+  font-family: 'Oswald', 'Open Sans', sans-serif;
+
+  & img {
+    padding-right: 5px;
+    margin-bottom: -5px;
+    width: 40px;
+  }
 `;
 
-const UserLink = styled(Link)`
+const UserName = styled.p`
   padding: 10px 20px;
   border-radius: 5px;
-  background: gray;
+  background: #396FB8;
   color: white;
   margin: 0 0 0 10px;
+  border: 2px solid white;
+  font-size: 0.9rem;
   text-decoration: none;
+  position: relative;
+  z-index: 100;
 `;
 
-const MenuItems = styled.div`
+const SignOut = styled.button`
+  ${'' /* position: absolute;
+  right: 0;
+  bottom: -25px; */}
+  font-size: 0.9rem;
+  color: white;
+  background: none;
+  ${'' /* opacity: 0;
+  transform: scale(0); */}
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: 2px solid white;
+  transition: 0.2s;
+  &:hover {
+    cursor: pointer;
+    background: tomato;
+    color: white;
+    border: 2px solid tomato;
+  }
+  &:active {
+    background: tomato;
+    color: white;
+    opacity: 0.5;
+    outline: none;
+  }
+  &:focus {
+    outline: none;
+  }
 `;
 
 const ButtonLink = styled(Link)`
@@ -73,15 +121,31 @@ const ButtonLink = styled(Link)`
   text-decoration: none;
 `;
 
-const ButtonALink = styled.a`
+const SignInButton = styled.button`
   padding: 10px 20px;
   border-radius: 5px;
   background: ${props =>
     (props.red && 'tomato')
     || (props.green && 'MEDIUMSEAGREEN')
-    || 'gray'
+    || 'none'
   };
   color: white;
+  border: 2px solid white;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.9rem;
   text-decoration: none;
   margin: 0;
+
+  @media (max-width: 400px) {
+    max-width: 100px;
+    max-height: 40px;
+    overflow: hidden;
+  }
+
+  &:hover {
+    cursor: pointer;
+    background: white;
+    color: #396FB8;
+  }
+
 `;

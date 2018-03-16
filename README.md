@@ -1,12 +1,12 @@
-# Poll'd
-Polling App using Mongo, Express, React, and Node + Github oauth
+# Beer Me
+Bar Finder app using Mongo, Express, React, and Node + Github oauth
 
 ## App Overview
 
-Create, view, and vote for your favorites in community created polls.
+Search for bars in your city. Let others know where you're going tonight.
 
-* To Create a poll, first sign in to Github then click the __Create a Poll__ button.
-* If signed in, you can also add new options to existing polls.
+* Use the search bar to find local bars.
+* If signed in to Github, you can let others know where you're going tonight.
 
 
 ## Dev Setup
